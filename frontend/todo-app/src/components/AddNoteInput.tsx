@@ -1,0 +1,14 @@
+export function AddNoteInput() {
+    return (<div className="bg-white rounded-b-sm">
+        <form>
+            <div className="flex items-center border-b border-teal-500 py-2 px-5">
+                <input
+                    className="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none"
+                    type="text" placeholder="Type Note" aria-label="Note Input Field" />
+                <button className="flex-shrink-0 bg-indigo-500 hover:bg-indigo-700 border-indigo-500 hover:border-indigo-700 text-sm border-4 text-white p-2 rounded-full" type="button">
+                    Add
+                </button>
+            </div>
+        </form>
+    </ div>);
+}
