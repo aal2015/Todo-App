@@ -16,7 +16,7 @@ const getNotes = (req, res) => {
         }
         res.status(200).json(dbRes.rows)
     });
-}
+};
 
 const addNote = (req, res) => {
     const { note } = req.body
@@ -25,11 +25,22 @@ const addNote = (req, res) => {
         if (err) {
             throw err;
         }
-        res.status(201).send('Note added successfully');
+        res.status(201).send('Note added successfully!');
+    });
+};
+
+const deleteNote = (req, res) => {
+    const id = parseInt(req.params.id);
+    pool.query('DELETE FROM notes WHERE id = $1', [id], (err, dbRes) => {
+        if (err) {
+            throw err
+        }
+        res.status(200).send(`Note deleted successfully!`)
     });
 }
 
 module.exports = {
     getNotes,
-    addNote
+    addNote,
+    deleteNote
 }

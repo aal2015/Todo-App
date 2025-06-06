@@ -38,5 +38,6 @@ app.get("/", (req, res) => {
 
 app.get('/notes', db.getNotes)
 app.post('/notes', db.addNote)
+app.delete('/notes/:id', db.deleteNote)
 
 app.listen(3000);
