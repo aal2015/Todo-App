@@ -1,30 +1,42 @@
-require('dotenv').config();
+// require('dotenv').config();
 
-const Pool = require('pg').Pool;
-const pool = new Pool({
-  user: process.env.user,
-  host: 'localhost',
-  database: 'todo',
-  password: process.env.password,
-  port: 5432,
-});
+// const Pool = require('pg').Pool;
+// const pool = new Pool({
+//   user: process.env.user,
+//   host: 'localhost',
+//   database: 'todo',
+//   password: process.env.password,
+//   port: 5432,
+// });
 
-pool.connect();
+// pool.connect();
 
-pool.query("Select * from notes", (err, res) => {
-    if (!err) {
-        console.log(res.rows);
-    } else {
-        console.log(err.message);
-    }
-});
+// pool.query("Select * from notes", (err, res) => {
+//     if (!err) {
+//         console.log(res.rows);
+//     } else {
+//         console.log(err.message);
+//     }
+// });
 
-const express = require("express");
+const db         = require('./queries')
+const express    = require("express");
+const bodyParser = require('body-parser')
+
 const app = express();
+app.use(bodyParser.json())
+app.use(
+  bodyParser.urlencoded({
+    extended: true,
+  })
+)
 
 app.get("/", (req, res) => {
     console.log("Here");
     res.send("Hi");
 });
+
+app.get('/notes', db.getNotes)
+app.post('/notes', db.addNote)
 
 app.listen(3000);
