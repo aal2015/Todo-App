@@ -21,11 +21,11 @@ const getNotes = (req, res) => {
 const addNote = (req, res) => {
     const { note } = req.body
 
-    pool.query("INSERT INTO notes (content) VALUES ($1)", [note], (err, dbRes) => {
+    pool.query("INSERT INTO notes (content) VALUES ($1) RETURNING *", [note], (err, dbRes) => {
         if (err) {
             throw err;
         }
-        res.status(201).send('Note added successfully!');
+        res.status(201).json(dbRes.rows[0]);
     });
 };
 
