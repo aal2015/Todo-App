@@ -17,7 +17,9 @@ export function DisplayNotes({ notes, onRemoveNote }: { notes: Note[], onRemoveN
         {notes.map((note) => (
             <div key={note.id} className='flex justify-between items-center border-t border-gray-300 py-4 px-6'>
                 <p className='text-xl'>{note.content}</p>
-                <button onClick={() => handleDeleteNote(note.id)} aria-label='Delete Note'>
+                <button
+                    className="text-indigo-500 hover:text-indigo-700 cursor-pointer"
+                    onClick={() => handleDeleteNote(note.id)} aria-label='Delete Note'>
                     <DeleteIcon />
                 </button>
             </div>
