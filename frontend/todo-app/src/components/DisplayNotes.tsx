@@ -13,7 +13,7 @@ export function DisplayNotes({ notes, onRemoveNote }: { notes: Note[], onRemoveN
         }
     };
 
-    return (<div>
+    return (<div className='h-96 overflow-y-auto'>
         {notes.map((note) => (
             <div key={note.id} className='flex justify-between items-center border-t border-gray-300 py-4 px-6'>
                 <p className='text-xl'>{note.content}</p>
