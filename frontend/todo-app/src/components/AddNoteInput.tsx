@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { Add } from '@mui/icons-material';
 import type { Note } from './Body';
+import { addNote } from './service';
 
 type Props = {
-  onAdd: (newNote: Note) => void;
+    onAdd: (newNote: Note) => void;
 };
 
 export function AddNoteInput({ onAdd }: Props) {
@@ -11,19 +12,12 @@ export function AddNoteInput({ onAdd }: Props) {
 
     const handleAddNote = async () => {
         if (!note.trim()) return;
-
-        try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/notes`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ note }),
+        await addNote(note)
+            .then(addedNote => {
+                onAdd(addedNote);
+                setNote("");
             })
-
-            const newNote: Note = await response.json();
-            onAdd(newNote);
-        } catch (error) {
-            console.error(error);
-        }
+            .catch(err => console.error(err))
     }
 
     return (

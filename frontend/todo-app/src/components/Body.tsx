@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { AddNoteInput } from "./AddNoteInput";
 import { DisplayNotes } from "./DisplayNotes";
-
-const dummyNotes: string[] = ["Buy eggs", "Buy milk", "Hit the gym", "Read Prediction Machines"];
+import { fetchNotes } from './service';
 
 export type Note = {
     id: number;
@@ -14,12 +13,9 @@ export function Body() {
     const [notes, setNotes] = useState<Note[]>([]);
 
     useEffect(() => {
-        fetch(`${import.meta.env.VITE_API_URL}/notes`)
-            .then(res => res.json())
-            .then(data => {
-                console.log(data);
-                setNotes(data);
-            });
+        fetchNotes()
+            .then(data => setNotes(data))
+            .catch(err => console.error(err))
     }, []);
 
     const addNewNoteToList = (newNote: Note) => {
