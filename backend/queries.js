@@ -35,7 +35,7 @@ const deleteNote = (req, res) => {
         if (err) {
             throw err
         }
-        res.status(200).send(`Note deleted successfully!`)
+        res.status(200).send({ messsage: `Note deleted successfully!`})
     });
 }
 

@@ -29,7 +29,7 @@ export function AddNoteInput({ onAdd }: Props) {
                     value={note} onChange={(e) => setNote(e.target.value)}
                 />
                 <button
-                    className="flex-shrink-0 bg-indigo-500 hover:bg-indigo-700 border-indigo-500 hover:border-indigo-700 text-sm border-4 text-white p-2 rounded-full"
+                    className="flex-shrink-0 bg-indigo-500 hover:bg-indigo-700 border-indigo-500 hover:border-indigo-700 text-sm border-4 text-white p-2 rounded-full cursor-pointer"
                     type="button" onClick={handleAddNote}
                 >
                     <Add />

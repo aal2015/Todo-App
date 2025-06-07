@@ -22,8 +22,12 @@ export function Body() {
         setNotes(prev => [...prev, newNote]);
     };
 
+    const removeNoteFromList = (id: number) => {
+        setNotes(prev => prev.filter(note => note.id !== id));
+    }
+
     return (<div className="bg-white rounded-b-sm">
         <AddNoteInput onAdd={addNewNoteToList} />
-        <DisplayNotes notes={notes} />
+        <DisplayNotes notes={notes} onRemoveNote={removeNoteFromList}/>
     </ div>);
 }
