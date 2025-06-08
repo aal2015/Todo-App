@@ -1,7 +1,10 @@
-const db         = require('./queries')
+const db         = require('./queries');
 const express    = require("express");
-const bodyParser = require('body-parser')
+const jwt        = require('jsonwebtoken');
+const bodyParser = require('body-parser');
 const cors       = require('cors');
+
+require('dotenv').config();
 
 const app = express();
 app.use(bodyParser.json());
@@ -17,8 +20,29 @@ app.get("/", (req, res) => {
     res.send("Hi");
 });
 
-app.get('/notes', db.getNotes)
-app.post('/notes', db.addNote)
-app.delete('/notes/:id', db.deleteNote)
+app.post("/login", (req, res) => {
+  // Authenticate User
+
+  const username = req.body.username;
+  const user = {name: username};
+  
+  const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
+  res.json({accessToken: accessToken});
+})  
+
+app.get('/notes', authenticateToken, db.getNotes);
+app.post('/notes', db.addNote);
+app.delete('/notes/:id', db.deleteNote);
+
+function authenticateToken(req, res, next) {
+  const authheader = req.headers['authorization'];
+  const token = authheader && authheader.split(' ')[1];
+  if (token == null) return res.sendStatus(401);
+
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+    if (err) return res.sendStatus(403);
+      next();
+  });
+}
 
 app.listen(3000);
