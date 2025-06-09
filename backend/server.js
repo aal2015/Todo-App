@@ -1,6 +1,7 @@
 const db = require('./queries');
 const express = require("express");
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
@@ -16,6 +17,7 @@ app.use(
 app.use(cors());
 
 let refreshTokens = [];
+let users = [];
 
 app.get("/", (req, res) => {
   console.log("Here");
@@ -31,6 +33,17 @@ app.post('/token', (req, res) => {
     const accessToken = generateAccessToken({ name: user.name })
     res.json({ accessToken: accessToken })
   })
+});
+
+app.post("/register", async (req, res) => {
+  try {
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    const user = { name: req.body.name, password: hashedPassword };
+    users.push(user);
+    res.status(201).send();
+  } catch {
+    res.status(500).send();
+  }
 });
 
 app.post("/login", (req, res) => {
