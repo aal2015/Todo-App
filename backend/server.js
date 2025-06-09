@@ -38,7 +38,7 @@ app.post('/token', (req, res) => {
 app.post("/register", async (req, res) => {
   try {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
-    const user = { name: req.body.name, password: hashedPassword };
+    const user = { username: req.body.username, password: hashedPassword };
     users.push(user);
     res.status(201).send();
   } catch {
@@ -46,9 +46,23 @@ app.post("/register", async (req, res) => {
   }
 });
 
-app.post("/login", (req, res) => {
+app.post("/login", async (req, res) => {
   // Authenticate User
+  const foundUser = users.find(user => user.username === req.body.username);
+  if (foundUser == null) {
+    return res.status(400).send('Cannot find user')
+  }
 
+  try {
+    const flag = await bcrypt.compare(req.body.password, foundUser.password);
+    if (!flag) {
+      res.sendStatus(403);
+    }
+  } catch {
+    res.status(500).send();
+  }
+
+  // Generate Access and Refresh Tokens
   const username = req.body.username;
   const user = { name: username };
 
