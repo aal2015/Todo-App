@@ -16,9 +16,14 @@ export function TodoBox() {
         Cookies.set('refresh_token', fetchedRefreshCookie);
     }
 
+    const logout = () => {
+        setAccessCookie(null);
+        setRefreshCookie(null);
+    }
+
     return (
         <div className="w-xl border border-solid rounded-sm">
-            <Header />
+            <Header accessCookie={accessCookie} onLogout={logout}/>
             {
                 accessCookie ?
                     <Body accessCookie={accessCookie} onSetAccessCookie={setAccessCookie} /> :
