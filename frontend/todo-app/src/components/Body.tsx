@@ -26,8 +26,8 @@ export function Body() {
         setNotes(prev => prev.filter(note => note.id !== id));
     }
 
-    return (<div className="bg-white rounded-b-sm">
+    return (<div className="bg-white rounded-b-sm h-96 flex flex-col">
         <AddNoteInput onAdd={addNewNoteToList} />
-        <DisplayNotes notes={notes} onRemoveNote={removeNoteFromList}/>
+        <DisplayNotes notes={notes} onRemoveNote={removeNoteFromList} />
     </ div>);
 }

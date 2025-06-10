@@ -82,8 +82,8 @@ function generateAccessToken(user) {
 }
 
 app.get('/notes', authenticateToken, db.getNotes);
-app.post('/notes', db.addNote);
-app.delete('/notes/:id', db.deleteNote);
+app.post('/notes', authenticateToken, db.addNote);
+app.delete('/notes/:id', authenticateToken, db.deleteNote);
 
 function authenticateToken(req, res, next) {
   const authheader = req.headers['authorization'];
