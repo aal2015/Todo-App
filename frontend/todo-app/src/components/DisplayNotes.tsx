@@ -3,10 +3,13 @@ import type { Note } from './Body';
 import { deleteNote } from './service';
 
 
-export function DisplayNotes({ notes, onRemoveNote }: { notes: Note[], onRemoveNote: (id: number) => void }) {
+export function DisplayNotes(
+    { notes, onRemoveNote, accessCookie }: 
+    { notes: Note[], onRemoveNote: (id: number) => void, accessCookie: string }
+) {
     const handleDeleteNote = async (id: number) => {
         try {
-            await deleteNote(id);
+            await deleteNote(id, accessCookie);
             onRemoveNote(id);
         } catch (err) {
             console.error(err);

@@ -1,6 +1,10 @@
 import { useState } from 'react';
+import { registerUser, loginUser } from './service';
+import { Message } from '@mui/icons-material';
 
-export function LoginRegister({onSetAuthCookie} : {onSetAuthCookie: () => void}) {
+export function LoginRegister(
+    { onSetAuthCookie }: { onSetAuthCookie: (fetchedAccessCookie: String, fetchedRefreshCookie: String) => void }
+) {
     const [isLogin, setIsLogin] = useState<Boolean>(true);
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -9,14 +13,17 @@ export function LoginRegister({onSetAuthCookie} : {onSetAuthCookie: () => void})
         setIsLogin(!isLogin);
     }
 
-    const handleSubmit = () => {
-        console.log(username);
-        console.log(password);
-
+    const handleSubmit = async () => {
         if (isLogin) {
-            
+            await loginUser(username, password)
+                .then(message => onSetAuthCookie(message.accessToken, message.refreshToken)
+                )
+                .catch(err => console.error(err));
         } else {
-
+            await registerUser(username, password)
+                .then(message => console.log(message)
+                )
+                .catch(err => console.error(err));
         }
     }
 

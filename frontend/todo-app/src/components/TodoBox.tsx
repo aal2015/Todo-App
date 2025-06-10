@@ -5,12 +5,25 @@ import { LoginRegister } from "./LoginRegister";
 import Cookies from "js-cookie";
 
 export function TodoBox() {
-    const [authCookie, setAuthCookie] = useState(Cookies.get('acess_token'));
-    
+    const [accessCookie, setAccessCookie] = useState(Cookies.get('access_token'));
+    const [refreshCookie, setRefreshCookie] = useState(Cookies.get('refresh_token'));
+
+    const storeAuthCookies = (fetchedAccessCookie: String, fetchedRefreshCookie: String) => {
+        setAccessCookie(fetchedAccessCookie);
+        setRefreshCookie(fetchedRefreshCookie);
+
+        Cookies.set('access_token', fetchedAccessCookie);
+        Cookies.set('refresh_token', fetchedRefreshCookie);
+    }
+
     return (
         <div className="w-xl border border-solid rounded-sm">
             <Header />
-            {authCookie ?  <Body /> : <LoginRegister onSetAuthCookie={setAuthCookie}/>}
+            {
+                accessCookie ?
+                    <Body accessCookie={accessCookie} onSetAccessCookie={setAccessCookie} /> :
+                    <LoginRegister onSetAuthCookie={storeAuthCookies} />
+            }
         </div>
     );
 }

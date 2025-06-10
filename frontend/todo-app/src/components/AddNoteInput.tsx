@@ -4,20 +4,21 @@ import type { Note } from './Body';
 import { addNote } from './service';
 
 type Props = {
-    onAdd: (newNote: Note) => void;
+    onAdd: (newNote: Note) => void,
+    accessCookie: string
 };
 
-export function AddNoteInput({ onAdd }: Props) {
-    const [note, setNote] = useState<string>("");
+export function AddNoteInput({ onAdd, accessCookie }: Props) {
+    const [note, setNote] = useState<string>("");    
 
     const handleAddNote = async () => {
         if (!note.trim()) return;
-        await addNote(note)
+        await addNote(note, accessCookie)
             .then(addedNote => {
                 onAdd(addedNote);
                 setNote("");
             })
-            .catch(err => console.error(err))
+            .catch(err => console.error(err));
     }
 
     return (

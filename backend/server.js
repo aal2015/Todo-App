@@ -1,7 +1,6 @@
 const db = require('./queries');
 const express = require("express");
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
@@ -17,7 +16,6 @@ app.use(
 app.use(cors());
 
 let refreshTokens = [];
-let users = [];
 
 app.get("/", (req, res) => {
   console.log("Here");
@@ -35,42 +33,9 @@ app.post('/token', (req, res) => {
   })
 });
 
-app.post("/register", async (req, res) => {
-  try {
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
-    const user = { username: req.body.username, password: hashedPassword };
-    users.push(user);
-    res.status(201).send();
-  } catch {
-    res.status(500).send();
-  }
-});
+app.post("/register", db.registerUser);
 
-app.post("/login", async (req, res) => {
-  // Authenticate User
-  const foundUser = users.find(user => user.username === req.body.username);
-  if (foundUser == null) {
-    return res.status(400).send('Cannot find user')
-  }
-
-  try {
-    const flag = await bcrypt.compare(req.body.password, foundUser.password);
-    if (!flag) {
-      res.sendStatus(403);
-    }
-  } catch {
-    res.status(500).send();
-  }
-
-  // Generate Access and Refresh Tokens
-  const username = req.body.username;
-  const user = { name: username };
-
-  const accessToken = generateAccessToken(user);
-  const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET);
-  refreshTokens.push(refreshToken);
-  res.json({ accessToken: accessToken, refreshToken: refreshToken });
-})
+app.post("/login", db.loginUser)
 
 app.delete('/logout', (req, res) => {
   refreshTokens = refreshTokens.filter(token => token !== req.body.token)
@@ -78,7 +43,7 @@ app.delete('/logout', (req, res) => {
 });
 
 function generateAccessToken(user) {
-  return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15s' });
+  return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '300s' }); // 5 min
 }
 
 app.get('/notes', authenticateToken, db.getNotes);
