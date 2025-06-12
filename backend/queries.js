@@ -4,41 +4,55 @@ const jwt = require('jsonwebtoken');
 
 const Pool = require('pg').Pool;
 const pool = new Pool({
-    user: process.env.user,
-    host: 'localhost',
-    database: 'todo',
-    password: process.env.password,
-    port: 5432,
+  user: process.env.user,
+  host: 'localhost',
+  database: 'todo',
+  password: process.env.password,
+  port: 5432,
 });
 
 const getNotes = (req, res) => {
-    pool.query("Select * from notes", (err, dbRes) => {
-        if (err) {
-            throw err;
-        }
-        res.status(200).json(dbRes.rows)
-    });
+  pool.query("Select * from notes", (err, dbRes) => {
+    if (err) {
+      throw err;
+    }
+    res.status(200).json(dbRes.rows)
+  });
 };
 
 const addNote = (req, res) => {
-    const { note } = req.body
+  const { note } = req.body
 
-    pool.query("INSERT INTO notes (content) VALUES ($1) RETURNING *", [note], (err, dbRes) => {
-        if (err) {
-            throw err;
-        }
-        res.status(201).json(dbRes.rows[0]);
-    });
+  pool.query("INSERT INTO notes (content) VALUES ($1) RETURNING *", [note], (err, dbRes) => {
+    if (err) {
+      throw err;
+    }
+    res.status(201).json(dbRes.rows[0]);
+  });
 };
 
 const deleteNote = (req, res) => {
-    const id = parseInt(req.params.id);
-    pool.query('DELETE FROM notes WHERE id = $1', [id], (err, dbRes) => {
-        if (err) {
-            throw err
-        }
-        res.status(200).send({ messsage: `Note deleted successfully!`})
-    });
+  const id = parseInt(req.params.id);
+  pool.query('DELETE FROM notes WHERE id = $1', [id], (err, dbRes) => {
+    if (err) {
+      throw err
+    }
+    res.status(200).send({ messsage: `Note deleted successfully!` })
+  });
+}
+
+const refreshToken = async (req, res) => {
+  const refreshToken = req.body.token;
+  if (refreshToken == null) return res.sendStatus(401);
+
+  const foundRefreshToken = await pool.query('SELECT * FROM refresh_tokens WHERE token = $1', [refreshToken]);
+
+  if (foundRefreshToken.rows.length === 0) return res.sendStatus(403);
+  jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+    if (err) return res.sendStatus(403)
+    const accessToken = generateAccessToken({ name: user.name })
+    res.json({ accessToken: accessToken })
+  });
 }
 
 const registerUser = async (req, res) => {
@@ -64,7 +78,6 @@ const registerUser = async (req, res) => {
   }
 };
 
-let refreshTokens = [];
 const loginUser = async (req, res) => {
   const { username, password } = req.body;
 
@@ -94,13 +107,14 @@ const loginUser = async (req, res) => {
 };
 
 function generateAccessToken(user) {
-  return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '300s' }); // 5 min
+  return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15s' });
 }
 
 module.exports = {
-    getNotes,
-    addNote,
-    deleteNote,
-    registerUser,
-    loginUser
+  getNotes,
+  addNote,
+  deleteNote,
+  refreshToken,
+  registerUser,
+  loginUser
 }
