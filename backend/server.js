@@ -28,10 +28,7 @@ app.post("/register", db.registerUser);
 
 app.post("/login", db.loginUser)
 
-app.delete('/logout', (req, res) => {
-  refreshTokens = refreshTokens.filter(token => token !== req.body.token)
-  res.sendStatus(204)
-});
+app.delete('/logout', db.logoutUser);
 
 app.get('/notes', authenticateToken, db.getNotes);
 app.post('/notes', authenticateToken, db.addNote);

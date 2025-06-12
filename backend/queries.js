@@ -106,6 +106,28 @@ const loginUser = async (req, res) => {
   }
 };
 
+const logoutUser = async (req, res) => {
+  const refreshToken = req.body.token;
+  if (!refreshToken) return res.sendStatus(400); // Bad Request
+
+  try {
+    // Delete the token from the database
+    const result = await pool.query(
+      'DELETE FROM refresh_tokens WHERE token = $1',
+      [refreshToken]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ message: "Token not found" });
+    }
+
+    res.status(204).send(); // No Content, successfully logged out
+  } catch (err) {
+    console.error("Error during logout:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+}
+
 function generateAccessToken(user) {
   return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15s' });
 }
@@ -116,5 +138,6 @@ module.exports = {
   deleteNote,
   refreshToken,
   registerUser,
-  loginUser
+  loginUser,
+  logoutUser
 }
