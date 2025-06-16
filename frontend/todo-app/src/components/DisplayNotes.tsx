@@ -4,12 +4,12 @@ import { deleteNote } from './service';
 
 
 export function DisplayNotes(
-    { notes, onRemoveNote, accessCookie }: 
-    { notes: Note[], onRemoveNote: (id: number) => void, accessCookie: string }
+    { notes, onRemoveNote, authCookies }: 
+    { notes: Note[], onRemoveNote: (id: number) => void, authCookies: { accessCookie: string, refreshCookie: string } }
 ) {
     const handleDeleteNote = async (id: number) => {
         try {
-            await deleteNote(id, accessCookie);
+            await deleteNote(id, authCookies.accessCookie, authCookies.refreshCookie);
             onRemoveNote(id);
         } catch (err) {
             console.error(err);

@@ -5,15 +5,15 @@ import { addNote } from './service';
 
 type Props = {
     onAdd: (newNote: Note) => void,
-    accessCookie: string
+    authCookies: { accessCookie: string, refreshCookie: string }
 };
 
-export function AddNoteInput({ onAdd, accessCookie }: Props) {
+export function AddNoteInput({ onAdd, authCookies }: Props) {
     const [note, setNote] = useState<string>("");    
 
     const handleAddNote = async () => {
         if (!note.trim()) return;
-        await addNote(note, accessCookie)
+        await addNote(note, authCookies.accessCookie, authCookies.refreshCookie)
             .then(addedNote => {
                 onAdd(addedNote);
                 setNote("");

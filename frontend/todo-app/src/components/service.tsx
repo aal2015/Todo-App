@@ -2,35 +2,33 @@ import type { Note } from "./Body";
 import { authFetch } from "./AuthFetch";
 
 export const fetchNotes = async (accessCookie: string, refreshCookie: string): Promise<Note[]> => {
-  const res = await authFetch(`${import.meta.env.VITE_API_URL}/notes`, {
-    method: 'GET',
-  }, accessCookie, refreshCookie);
+    const res = await authFetch(`${import.meta.env.VITE_API_URL}/notes`, {
+        method: 'GET',
+    }, accessCookie, refreshCookie);
 
-  if (!res.ok) throw new Error('Failed to fetch notes');
-  return res.json();
+    if (!res.ok) throw new Error('Failed to fetch notes');
+    return res.json();
 };
 
-export const addNote = async (note: string, accessToken: String): Promise<Note> => {
-    const res = await fetch(`${import.meta.env.VITE_API_URL}/notes`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            'Authorization': `Bearer ${accessToken}`
-        },
+export const addNote = async (
+    note: string, accessCookie: string, refreshCookie: string
+): Promise<Note> => {
+    const res = await authFetch(`${import.meta.env.VITE_API_URL}/notes`, {
+        method: 'POST',
         body: JSON.stringify({ note }),
-    });
+    }, accessCookie, refreshCookie);
+
     if (!res.ok) throw new Error('Failed to fetch notes');
     return res.json();
 }
 
-export const deleteNote = async (id: number, accessToken: string): Promise<void> => {
-    const res = await fetch(`${import.meta.env.VITE_API_URL}/notes/${id}`, {
-        method: "DELETE",
-        headers: {
-            'Authorization': `Bearer ${accessToken}`,
-            'Content-Type': 'application/json'
-        }
-    });
+export const deleteNote = async (
+    id: number, accessCookie: string, refreshCookie: string
+): Promise<void> => {
+    const res = await authFetch(`${import.meta.env.VITE_API_URL}/notes/${id}`, {
+        method: 'DELETE',
+    }, accessCookie, refreshCookie);
+
     if (!res.ok) throw new Error('Failed to delte notes');
     return res.json();
 }

@@ -37,9 +37,9 @@ export function Body(
     }
 
     return (<div className="bg-white rounded-b-sm h-96 flex flex-col">
-        <AddNoteInput onAdd={addNewNoteToList} accessCookie={authCookies.accessCookie} />
+        <AddNoteInput onAdd={addNewNoteToList} authCookies={authCookies} />
         <DisplayNotes
-            notes={notes} onRemoveNote={removeNoteFromList} accessCookie={authCookies.accessCookie}
+            notes={notes} onRemoveNote={removeNoteFromList} authCookies={authCookies}
         />
     </ div>);
 }
