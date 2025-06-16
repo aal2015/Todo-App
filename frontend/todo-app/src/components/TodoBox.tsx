@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Header } from "./Header";
 import { Body } from "./Body";
 import { LoginRegister } from "./LoginRegister";
+import { logoutUser } from './service';
 import Cookies from "js-cookie";
 
 export function TodoBox() {
@@ -16,7 +17,8 @@ export function TodoBox() {
         setRefreshCookie(fetchedRefreshCookie);
     }
 
-    const logout = () => {
+    const logout = async() => {
+        await logoutUser(refreshCookie);
         setAccessCookie(null);
         setRefreshCookie(null);
     }

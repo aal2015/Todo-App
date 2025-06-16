@@ -52,3 +52,18 @@ export const loginUser = async (username: string, password: string) => {
     if (!res.ok) throw new Error('Failed login!');
     return res.json();
 }
+
+export const logoutUser = async (refreshCookie: string) => {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/logout`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: refreshCookie }),
+    });
+
+    if (res.status === 204) {
+        console.log("Refresh token removed successfully!");
+        return;
+    }
+
+    if (!res.ok) throw new Error('Refresh token already removed or refresh token not stored!');
+}
