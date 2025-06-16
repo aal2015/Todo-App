@@ -11,13 +11,15 @@ export type Note = {
 };
 
 export function Body(
-    { accessCookie, onSetAccessCookie }:
-        { accessCookie: string, onSetAccessCookie: (nullValue: null) => void }
+    { authCookies, onSetAccessCookie }: {
+        authCookies: { accessCookie: string, refreshCookie: string }
+        onSetAccessCookie: (nullValue: null) => void
+    }
 ) {
     const [notes, setNotes] = useState<Note[]>([]);
 
     useEffect(() => {
-        fetchNotes(accessCookie)
+        fetchNotes(authCookies.accessCookie, authCookies.refreshCookie)
             .then(data => setNotes(data))
             .catch(err => {
                 console.error(err);
@@ -35,9 +37,9 @@ export function Body(
     }
 
     return (<div className="bg-white rounded-b-sm h-96 flex flex-col">
-        <AddNoteInput onAdd={addNewNoteToList} accessCookie={accessCookie} />
+        <AddNoteInput onAdd={addNewNoteToList} accessCookie={authCookies.accessCookie} />
         <DisplayNotes
-            notes={notes} onRemoveNote={removeNoteFromList} accessCookie={accessCookie}
+            notes={notes} onRemoveNote={removeNoteFromList} accessCookie={authCookies.accessCookie}
         />
     </ div>);
 }

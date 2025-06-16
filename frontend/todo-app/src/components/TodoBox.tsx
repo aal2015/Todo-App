@@ -9,11 +9,11 @@ export function TodoBox() {
     const [refreshCookie, setRefreshCookie] = useState(Cookies.get('refresh_token'));
 
     const storeAuthCookies = (fetchedAccessCookie: String, fetchedRefreshCookie: String) => {
-        setAccessCookie(fetchedAccessCookie);
-        setRefreshCookie(fetchedRefreshCookie);
-
         Cookies.set('access_token', fetchedAccessCookie);
         Cookies.set('refresh_token', fetchedRefreshCookie);
+
+        setAccessCookie(fetchedAccessCookie);
+        setRefreshCookie(fetchedRefreshCookie);
     }
 
     const logout = () => {
@@ -23,10 +23,13 @@ export function TodoBox() {
 
     return (
         <div className="w-xl border border-solid rounded-sm">
-            <Header accessCookie={accessCookie} onLogout={logout}/>
+            <Header accessCookie={accessCookie} onLogout={logout} />
             {
                 accessCookie ?
-                    <Body accessCookie={accessCookie} onSetAccessCookie={setAccessCookie} /> :
+                    <Body
+                        authCookies={{ accessCookie: accessCookie, refreshCookie: refreshCookie }}
+                        onSetAccessCookie={setAccessCookie}
+                    /> :
                     <LoginRegister onSetAuthCookie={storeAuthCookies} />
             }
         </div>

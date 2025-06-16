@@ -15,8 +15,6 @@ app.use(
 );
 app.use(cors());
 
-let refreshTokens = [];
-
 app.get("/", (req, res) => {
   console.log("Here");
   res.send("Hi");

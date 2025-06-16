@@ -1,17 +1,14 @@
-import type { Note } from "./Body"
+import type { Note } from "./Body";
+import { authFetch } from "./AuthFetch";
 
-export const fetchNotes = async (accessToken: String): Promise<Note[]> => {
-    const res = await fetch(`${import.meta.env.VITE_API_URL}/notes`, {
-        method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${accessToken}`,
-            'Content-Type': 'application/json'
-        }
-    });
+export const fetchNotes = async (accessCookie: string, refreshCookie: string): Promise<Note[]> => {
+  const res = await authFetch(`${import.meta.env.VITE_API_URL}/notes`, {
+    method: 'GET',
+  }, accessCookie, refreshCookie);
 
-    if (!res.ok) throw new Error('Failed to fetch notes');
-    return res.json();
-}
+  if (!res.ok) throw new Error('Failed to fetch notes');
+  return res.json();
+};
 
 export const addNote = async (note: string, accessToken: String): Promise<Note> => {
     const res = await fetch(`${import.meta.env.VITE_API_URL}/notes`, {
